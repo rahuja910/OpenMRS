@@ -89,7 +89,7 @@ public class MigrateAllergiesChangeSet implements CustomTaskChange {
 			while (rs.next()) {
 				String uuid = rs.getString("uuid");	
 				
-				//insert allergy
+				//insert allergyuuid
 				allergyInsertStatement.setInt(1, rs.getInt("person_id"));
 				allergyInsertStatement.setInt(2, rs.getInt("concept_id"));
 				
@@ -154,11 +154,20 @@ public class MigrateAllergiesChangeSet implements CustomTaskChange {
 	private Integer getConceptByGlobalProperty(Database database, String globalPropertyName) throws Exception {
 		JdbcConnection connection = (JdbcConnection) database.getConnection();
 		Statement stmt = connection.createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT property_value FROM global_property WHERE property = '" + globalPropertyName + "'");
+		
+		String sql = "SELECT property_value FROM global_property WHERE property = ?";
+		PreparedStatement globalPropertySelectStatement = connection.prepareStatement(sql);
+		globalPropertySelectStatement.setString(1, globalPropertyName);
+		ResultSet rs = globalPropertySelectStatement.executeQuery();
+		
 		if (rs.next()) {
 			String uuid = rs.getString("property_value");
 			
-			rs = stmt.executeQuery("SELECT concept_id FROM concept WHERE uuid = '" + uuid + "'");
+			sql = "SELECT concept_id FROM concept WHERE uuid = ?";
+			PreparedStatement conceptSelectStatement = connection.prepareStatement(sql);
+			conceptSelectStatement.setString(1, uuid);
+			rs = conceptSelectStatement.executeQuery();
+			
 			if (rs.next()) {
 				return rs.getInt("concept_id");
 			}
@@ -167,3 +176,4 @@ public class MigrateAllergiesChangeSet implements CustomTaskChange {
 		throw new IllegalStateException("Configuration required: " + globalPropertyName);
 	}
 }
+
