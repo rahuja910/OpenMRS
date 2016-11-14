@@ -16,7 +16,13 @@
 	version="2.4">
 
 	<display-name>@WEBAPP.DISPLAY.NAME@</display-name>
-	<description>@WEBAPP.DESCRIPTION@</description> 
+	<description>@WEBAPP.DESCRIPTION@</description>
+	
+	<session-config>
+ 		<cookie-config>
+  			<http-only>true</http-only>
+ 		</cookie-config>
+	</session-config>
 
 	<context-param>
         <param-name>contextConfigLocation</param-name>
