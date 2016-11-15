@@ -284,7 +284,8 @@ public class Context {
 	 */
 	public static void authenticate(String username, String password) throws ContextAuthenticationException {
 		if (log.isDebugEnabled()) {
-			log.debug("Authenticating with username: " + username);
+			String encryptedUsername=Security.encrypt(username);
+			log.debug("Authenticating with username: " + encryptedUsername);
 		}
 
 		if (Daemon.isDaemonThread()) {
